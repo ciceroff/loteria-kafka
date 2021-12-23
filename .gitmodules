@@ -1,0 +1,3 @@
+[submodule "LOTERIA"]
+	path = LOTERIA
+	url = https://github.com/ciceroff/prova_adonis.git
