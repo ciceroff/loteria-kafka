@@ -1,29 +1,13 @@
-import express from 'express';
-import { Kafka } from 'kafkajs';
+const express = require('express');
+const Consumer = require('./Kafka/Consumer');
 
 const app = express();
+const consumer = new Consumer();
 
-const kafka = new Kafka({
-  brokers: ['localhost:9092'],
-});
+// consumer.consume('new-bet');
+consumer.consume('new-user');
+// consumer.consume('user-no-bet');
+// consumer.consume('admin-warn');
+// consumer.consume('password-recovery');
 
-const producer = kafka.producer();
-
-await producer.connect();
-await producer.send({
-  topic: 'test-topic',
-  messages: [{ value: 'Hello KafkaJS user!' }],
-});
-await producer.disconnect();
-
-const consumer = kafka.consumer({ groupId: 'test-group' });
-await consumer.connect();
-await consumer.subscribe({ topic: 'test-topic', fromBeginning: true });
-await consumer.run({
-  eachMessage: async ({ topic, partition, message }) => {
-    console.log({
-      value: message.value.toString(),
-    });
-  },
-});
-app.listen(3333);
+app.listen(3000);
