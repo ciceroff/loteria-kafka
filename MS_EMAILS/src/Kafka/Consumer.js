@@ -14,11 +14,7 @@ class Consumer {
     await this.consumer.connect();
     await this.consumer.subscribe({ topic: topic, fromBeginning: true });
     await this.consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        // console.log({
-        //   value: message.value.toString(),
-        // });
-
+      eachMessage: async ({ topic, message }) => {
         switch (topic) {
           case 'new-bet':
             var user = JSON.parse(message.value);
