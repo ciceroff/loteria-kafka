@@ -4,7 +4,7 @@ const Mailer = require('../Mails/mailer');
 class Consumer {
   constructor() {
     const kafka = new Kafka({
-      brokers: ['localhost:9092'],
+      brokers: ['0.0.0.0:9092'],
     });
     this.consumer = kafka.consumer({ groupId: 'test-group' });
   }
@@ -18,25 +18,37 @@ class Consumer {
         // console.log({
         //   value: message.value.toString(),
         // });
+
         switch (topic) {
           case 'new-bet':
+            var user = JSON.parse(message.value);
             mail.newBet(user);
             break;
 
           case 'new-user':
+            var user = JSON.parse(message.value);
             mail.newUser(user);
             break;
 
           case 'user-no-bet':
+            var user = JSON.parse(message.value);
             mail.lateBet(user);
             break;
 
           case 'admin-warn':
-            mail.adminWarn(admin, user);
+            var messages = JSON.parse(message.value);
+
+            for (let i = 0; i < messages.admins.length; i++)
+              mail.adminWarn(
+                messages.admins[i],
+                messages.user,
+                messages.length,
+              );
             break;
 
           case 'password-recovery':
-            mail.passwordRecovery(user, token);
+            var user = JSON.parse(message.value);
+            mail.passwordRecovery(user, user.token);
             break;
         }
       },
